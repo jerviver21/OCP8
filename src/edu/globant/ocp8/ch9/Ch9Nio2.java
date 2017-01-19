@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
 
 /**
  * Checklist:
@@ -23,8 +24,56 @@ public class Ch9Nio2 {
 		Ch9Nio2 object = new Ch9Nio2();
 		//object.pathsCreationNormalizeAndRelativize();
 		//object.testingDelete();
-		object.testingAttributes();
+		//object.testingAttributes();
+		//object.testingToAbsolutePath();
+		//object.testingSymbolicLink();
+		object.testingWalk();
 		
+	}
+	
+	public void testingWalk()throws IOException{
+		Path path0 = Paths.get("/home/jerviver21/ocp8/dir1");
+		Optional<Path> path1 = Files.walk(path0)
+				.filter((a)-> Files.isDirectory(a))
+				.findFirst();
+		
+		System.out.println(" Files.walk retorna un Stream<Path>, filter recibe un Predicate<Path>, "
+				+ "findFirst() encuentra \n el primero y retorna un Optional, si hay archivos es ese directorio? "+path1.get());
+		
+		Files.walk(path0)
+		.filter((a)-> Files.exists(a))
+		.forEach(p -> System.out.println(p));
+		
+		System.out.println("Recuerde que walk es depth hasta Integer.MAX_VALUE");
+		
+	}
+	
+	public void testingSymbolicLink()throws IOException{
+		Path path0 = Paths.get("/home/jerviver21/ocp8/dir1");
+		Path path1 = Paths.get("/home/jerviver21/ocp8/dir3");
+		Path path2 = path1.resolve("joey");
+		
+		//Files.deleteIfExists(path0);
+		
+		if(Files.isDirectory(path1) && Files.isSymbolicLink(path1) && !Files.exists(path2)){
+			Files.createDirectory(path1.resolve("joey"));
+		}
+		
+		System.out.println("Resolve joins two paths: "+Files.exists(path2)+" - "+path2+ " Is directory: "
+		+Files.isDirectory(path1)+" - is simbolic: "+Files.isSymbolicLink(path1));
+		System.out.println("Symbolic link could point to a no existing directory!   ?? does not work for me :( ");
+	}
+	
+	public void testingToAbsolutePath()throws IOException{
+		Path path = Paths.get("/zoo/animals/bear/koala/food.txt");
+		Path subpath = path.subpath(1, 3);
+		System.out.println("For this path: "+path);
+		System.out.println("subpath(1,3): Subpath is last minus first including the first (0-index: without consider /) : "+subpath);
+
+		Path dir1 = subpath.getName(1);
+		System.out.println("getName(1): "+dir1);
+		
+		System.out.println("toAbsoutePath works considering the current directory (if the path is relative it adds the absolute path of the current): "+dir1.toAbsolutePath());
 	}
 	
 	public void testingAttributes()throws IOException{
