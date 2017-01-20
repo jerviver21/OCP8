@@ -2,13 +2,17 @@ package edu.globant.ocp8.ch9;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Checklist:
@@ -27,7 +31,108 @@ public class Ch9Nio2 {
 		//object.testingAttributes();
 		//object.testingToAbsolutePath();
 		//object.testingSymbolicLink();
-		object.testingWalk();
+		//object.testingWalk();
+		//object.testingResolve();
+		//object.testingLines();
+		//object.testingMove();
+		//object.testingCopy();
+		//object.testingFind();
+		//object.testingFlatMap();
+		//object.testingNio();
+		object.testingNormalize();
+		
+	}
+	
+	public void testingNormalize()throws IOException{
+		Path path0 = Paths.get(".").normalize();
+
+		System.out.println("-"+path0+"- is the return of normalize - COUNT= "+path0.getNameCount()+" name: -"+path0.getName(0)+"- "+path0.toAbsolutePath());
+		
+		int count = 0;
+		for(int i=0; i<path0.getNameCount(); ++i) {
+			count++;
+		}
+		System.out.println(count);
+
+
+	}
+	
+	public void testingNio()throws IOException{
+		Path path0 = Paths.get(".").toRealPath();
+		Path path1 = path0.getParent();
+		System.out.println(path0+" is the return of toRealPath");
+		System.out.println(path1+" is the return of getParent");
+		Files.walk(path1.resolve("OCP8"))
+			.map(p -> p.toAbsolutePath().toString())
+			.filter(p -> p.matches(".*.java"))
+			.forEach(System.out::println);
+	}
+	
+	public void testingFlatMap()throws IOException{
+		Path path0 = FileSystems.getDefault().getPath("/home/jerviver21/ocp8/dir0/file0.txt");
+		System.out.println("flatMap, siempre lleva como retorno un Stream, no importa como lo cree un Stream.of(List1, List2) es algo tipico");
+		/*Files.lines(path0)
+			.flatMap(p -> Stream.of(p.split(",")))
+			.map(s -> s.toUpperCase())
+			.forEach(System.out::println);*/
+
+	}
+	
+	public void testingFind()throws IOException{
+		Path path0 = FileSystems.getDefault().getPath("/home/jerviver21/ocp8/dir0");
+		System.out.println("Probando Files.find");
+		Files.find(path0,0, (p,a)->Files.isDirectory(path0))
+			.map(p -> p.toString())
+			.collect(Collectors.toList())
+			.forEach(System.out::println);
+		
+		System.out.println("find recibe Path, int profundidad de busqueda, y un Predicate (condición de búsqueda que debe tener el Path)");
+		System.out.println("map(Function<T,R>), y collect un Collector");
+		
+		Files.list(path0).forEach(System.out::println);
+		System.out.println("Mientras que el primer Path que retorna find es si mismo, list solo retorna lo que este dentro");
+	}
+	
+	public void testingCopy()throws IOException{
+		Path path0 = Paths.get("/home/jerviver21/ocp8/dir0/file0.txt");
+		Path path1 = Paths.get("/home/jerviver21/ocp8/dir1/file0.txt");
+		
+		Files.copy(path0
+				,path1
+				,StandardCopyOption.COPY_ATTRIBUTES
+				,LinkOption.NOFOLLOW_LINKS);
+		
+		System.out.println("isSameFiles is : "+Files.isSameFile(path0, path1)+" when is the same file in diferent locations");
+		
+		
+	}
+	
+	
+	
+	public void testingMove()throws IOException{
+		System.out.println("Files.move mueve el archivo con todo y metadata");
+		Files.move(Paths.get("/home/jerviver21/ocp8/dir1/dir10")
+				,Paths.get("/home/jerviver21/ocp8/dir0/file0.txt")
+				,StandardCopyOption.ATOMIC_MOVE
+				,LinkOption.NOFOLLOW_LINKS);
+	}
+	
+	public void testingLines()throws IOException{
+		Path path0 = FileSystems.getDefault().getPath("/home/jerviver21/ocp8/dir0");
+		System.out.println("Trabaja con archivos grandes, y con Streams es una gran ventaja");
+		Files.lines(
+				Files.list(path0)
+					.peek(System.out::println)
+					.findFirst().get())
+		.forEach(System.out::println);;
+	}
+	
+	public void testingResolve()throws IOException{
+		Path path1 = Paths.get("/pets/../cat.txt/./dog.txt");
+		Path path2 = Paths.get("./dog.txt");
+		
+		System.out.println("Resolve une una relativa a otra relativa o absuluta: "+path1.resolve(path2));
+		System.out.println("Si la que entra como parámetro es absoluta entonces ignora la otra "+path2.resolve(path1));
 		
 	}
 	
