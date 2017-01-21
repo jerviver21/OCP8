@@ -1,6 +1,12 @@
-package edu.globant.ocp8.ch1;
+package edu.paidea.ocp8.ch1;
 
-
+/**
+ * checklist:
+ * 
+ * 1- clases internas locales, pueden usar varaibles locales, siempre y cuando sean efectivamente finals (locales variables creadas dentro del método)
+ * 
+ *
+ */
 public class Ch1 {
 	
 	int id = 1;
