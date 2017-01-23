@@ -39,7 +39,9 @@ public class Ch9Nio2 {
 		//object.testingFind();
 		//object.testingFlatMap();
 		//object.testingNio();
-		object.testingNormalize();
+		//object.testingNormalize();
+		
+		System.out.println("Jerson".substring(2,5));
 		
 	}
 	
@@ -182,7 +184,7 @@ public class Ch9Nio2 {
 	}
 	
 	public void testingAttributes()throws IOException{
-		Path file1 = Paths.get("/home/developer/ocp8/dir0/file.txt");
+		Path file1 = Paths.get("/home/jerviver21/ocp8/dir0/file0.txt");
 		BasicFileAttributes attributes = Files.readAttributes(file1, BasicFileAttributes.class);
 		System.out.println("For reading use - readAttributes(Path, class) -");
 		BasicFileAttributeView view = Files.getFileAttributeView(file1, BasicFileAttributeView.class);
