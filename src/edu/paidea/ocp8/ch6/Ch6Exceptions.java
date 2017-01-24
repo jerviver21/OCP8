@@ -1,4 +1,4 @@
-package edu.paidea.ocp8.ch5;
+package edu.paidea.ocp8.ch6;
 
 /**
  * Checklist:
@@ -6,7 +6,7 @@ package edu.paidea.ocp8.ch5;
  * 
  * @author jerviver21
  */
-public class Ch5Exceptions {
+public class Ch6Exceptions {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
